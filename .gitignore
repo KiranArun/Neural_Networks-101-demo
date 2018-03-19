@@ -1,0 +1,6 @@
+*.pyc
+MNIST_data/*
+logdir/run*
+.ipynb_checkpoints
+core
+
