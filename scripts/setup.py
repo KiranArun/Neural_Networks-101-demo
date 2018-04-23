@@ -10,4 +10,5 @@ if 'tensorboard' in sys.argv[1:]:
 	subprocess.call(['/content/Neural_Networks-demo/scripts/run_tensorboard.sh'])
 
 if 'helper_funcs' in sys.argv[1:]:
+	print('getting helper functions')
 	subprocess.call(['cp', '/content/Neural_Networks-demo/helper_funcs.py', '/content/'])
