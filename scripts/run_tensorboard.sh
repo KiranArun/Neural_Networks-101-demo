@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Running tensorboard..."
 
 tensorboard --logdir ./logdir/ --host 0.0.0.0 --port 6006 & true;
