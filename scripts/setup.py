@@ -7,7 +7,7 @@ if 'pytorch' in sys.argv[1:]:
 
 if 'tensorboard' in sys.argv[1:]:
 	subprocess.call(['chmod', '+x', '/content/Neural_Networks-demo/scripts/run_tensorboard.sh'])
-	subprocess.call(['/content/Neural_Networks-demo/scripts/run_tensorboard.sh'])
+	os.system('/content/Neural_Networks-demo/scripts/run_tensorboard.sh &')
 
 if 'helper_funcs' in sys.argv[1:]:
 	print('Getting helper functions...')
