@@ -87,7 +87,7 @@ def softmax_graphs(ax):
         plt.xticks(x, [r'$k_1$',r'$k_2$',r'$k_3$', r'$k_4$', r'$k_5$',r'$k_6$', r'$k_7$', r'$k_8$',r'$k_9$', r'$k_{10}$'])
         plt.grid(True)
 
-def animate_gradient_descent(L_func=None, L_func_p=None, frames=20, lr=0.1, X=np.linspace(-10,10,2001), interval=320):
+def animate_gradient_descent(L_func=None, L_func_p=None, frames=20, lr=0.1, X=np.linspace(-10,10,2001), interval=320, start=-10):
 
     if L_func or L_func_p == None:
         def L_func(x):
@@ -96,7 +96,7 @@ def animate_gradient_descent(L_func=None, L_func_p=None, frames=20, lr=0.1, X=np
         def L_func_p(x):
             return(2*x)
 
-    xs = np.array([-10])
+    xs = np.array([start])
     ys = np.array([L_func(xs[0])])
 
     for i in range(frames):
