@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import animation, rc
 
 def draw_neural_net(ax, left, right, bottom, top, layer_sizes, layer_text=None):
 
