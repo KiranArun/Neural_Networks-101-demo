@@ -106,7 +106,7 @@ def animate_gradient_descent(L_func=None, L_func_p=None, frames=20, lr=0.1, X=np
 
     fig, ax = plt.subplots()
 
-    ax.plot(X,f(X))
+    ax.plot(X,L_func(X))
 
     line, = ax.plot([], [], 'o')
       
