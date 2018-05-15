@@ -14,14 +14,14 @@ The human interface to the underlying [Tensorflow](https://www.tensorflow.org/) 
 
 
 ### The Different Frameworks Used
-- Low level Tensorflow - `./`
+- Low level Tensorflow - `tensorflow_models/`
 - Keras - `keras_models/`
 - PyTorch - `pytorch_models/`
 - Low level Tensorflow with Tensorboard - `tb_models/`
 
 
 ### Documented Introductory Notebooks
-- `Basic_MNIST-keasy.ipynb` is a very basic intro using Keras
+- `Basic_MNIST-easy.ipynb` is a very basic intro using Keras
 - `Basic_MNIST.ipynb` is a more advanced intro using low-level Tensorflow
 
 
