@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import animation, rc
+import tensorflow as tf
+import sklearn.linear_model
+from math import ceil,floor
 
 def draw_neural_net(ax, left, right, bottom, top, layer_sizes, layer_text=None):
 
