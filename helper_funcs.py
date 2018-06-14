@@ -120,3 +120,41 @@ def animate_gradient_descent(L_func=None, L_func_p=None, frames=20, lr=0.1, X=np
                                    blit=True)
 
     return(anim)
+
+def convert_inputs_to_poly(x,order):
+	x = x.reshape(-1,1)
+	inputs = np.empty([x.shape[0],0])
+	for i in range(order+1):        
+		inputs = np.append(inputs,x**i,axis=1)
+	return(inputs)
+
+def show_gd_batch_variations():
+
+	orders = [1,2,10]
+	titles = ['Underfit','Fit','Overfit']
+
+	def f(x):
+		return(x**2)
+
+	train_x = np.linspace(0,10,10)
+	train_y = f(train_x) + 3*np.random.randn(train_x.size)
+	test_x = np.linspace(0,10,51)
+	test_y = f(test_x)
+
+	for i,order in enumerate(orders):
+
+		train_inputs = convert_inputs_to_poly(train_x,order)
+
+		clf = sklearn.linear_model.LinearRegression(fit_intercept=True, normalize=False, copy_X=True, n_jobs=1)
+		clf.fit(train_inputs,train_y)
+
+		plt.title(titles[i])
+		plt.scatter(train_x,clf.predict(train_inputs),color='b',label='training data predictions')
+		plt.plot(test_x,clf.predict(convert_inputs_to_poly(test_x,order)),color='r',label='predicted distibution')
+		plt.scatter(train_x,train_y,color='g',label='training data')
+		plt.plot(test_x,test_y,color='g',label='underlying distibution')
+		plt.legend()
+		plt.show()
+
+		print('training loss:', np.mean((clf.predict(train_inputs)-train_y)**2))
+		print('testing loss:', np.mean((clf.predict(convert_inputs_to_poly(test_x,order))-test_y)**2))
