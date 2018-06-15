@@ -168,6 +168,9 @@ def show_batch_learning(batch_size=None,M=4.0,x_train=np.linspace(0,10,11),epoch
     
     if batch_size == None:
         batch_size = x_train.size
+    if batch_size > x_train.size:
+    	print('Please set batch_size <= x_train.size (x_train.size defaults to 11)')
+    	batch_size = x_train.size
     iterations = ceil(x_train.size/batch_size)
     
     def f(x):
