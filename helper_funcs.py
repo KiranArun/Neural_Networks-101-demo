@@ -125,7 +125,7 @@ def animate_gradient_descent(L_func=None, L_func_p=None, frames=20, lr=0.1, X=np
 
     return(anim)
 
-def show_gd_batch_variations():
+def show_line_fits():
 
 	def convert_inputs_to_poly(x,order):
 		x = x.reshape(-1,1)
