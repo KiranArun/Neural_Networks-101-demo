@@ -4,6 +4,7 @@ from matplotlib import animation, rc
 import tensorflow as tf
 import sklearn.linear_model
 from math import ceil,floor
+from sklearn.utils import shuffle
 
 def draw_neural_net(ax, left, right, bottom, top, layer_sizes, layer_text=None):
 
@@ -124,14 +125,14 @@ def animate_gradient_descent(L_func=None, L_func_p=None, frames=20, lr=0.1, X=np
 
     return(anim)
 
-def convert_inputs_to_poly(x,order):
-	x = x.reshape(-1,1)
-	inputs = np.empty([x.shape[0],0])
-	for i in range(order+1):        
-		inputs = np.append(inputs,x**i,axis=1)
-	return(inputs)
-
 def show_gd_batch_variations():
+
+	def convert_inputs_to_poly(x,order):
+		x = x.reshape(-1,1)
+		inputs = np.empty([x.shape[0],0])
+		for i in range(order+1):        
+			inputs = np.append(inputs,x**i,axis=1)
+		return(inputs)
 
 	orders = [1,2,10]
 	titles = ['Underfit','Fit','Overfit']
@@ -161,3 +162,83 @@ def show_gd_batch_variations():
 
 		print('training loss:', np.mean((clf.predict(train_inputs)-train_y)**2))
 		print('testing loss:', np.mean((clf.predict(convert_inputs_to_poly(test_x,order))-test_y)**2))
+
+
+def show_batch_learning(batch_size=None,M=4.0,x_train=np.linspace(0,10,11),epochs=10,learning_rate=0.01):
+    
+    if batch_size == None:
+        batch_size = x_train.size
+    iterations = ceil(x_train.size/batch_size)
+    
+    def f(x):
+        return(M*x)
+
+    def forward(x):
+        return(W*x)
+
+    def loss(logits,labels):
+        return(0.5*np.mean((labels-logits)**2))
+
+    def back_prop(inputs,logits,labels):
+        w_delta = inputs*(-labels+logits)
+        w_delta = np.mean(w_delta)
+        return(w_delta)
+    
+    y_train = f(x_train) + 3*np.random.randn(x_train.size)
+    
+    x_train, y_train = shuffle(x_train, y_train, random_state=0)
+    W = np.random.randn(1)
+    
+    losses = np.array([])
+    Ws = np.array([W])
+    grads = np.array([])
+
+    for epoch in range(epochs):
+        for iteration in range(iterations):
+
+            x = x_train[iteration*batch_size:(iteration+1)*batch_size]
+            y = y_train[iteration*batch_size:(iteration+1)*batch_size]
+
+            logits = forward(x)
+            l = loss(logits,y)
+            grad = back_prop(x,logits,y)
+            
+            W -= learning_rate*grad
+
+            losses = np.append(losses,l)
+            Ws = np.append(Ws,W)
+            grads = np.append(grads,grad)
+            
+    logits = forward(x)
+    l = loss(logits,y)
+    losses = np.append(losses,l)
+    grad = back_prop(x,logits,y)
+    grads = np.append(grads,grad)
+    
+    plt.plot(losses)
+    plt.title('Loss over time')
+    plt.show()
+    
+    fig, ax = plt.subplots(1,2,figsize=(16,5))
+    
+    ax[0].set_title('Loss over W')
+    ax[1].set_title('Line prediction')
+
+    ax[1].scatter(x_train,y_train,c='g')
+    test_weights = np.linspace(np.min(Ws)-1,np.max(Ws)+1,101)
+    ax[0].plot(test_weights,[loss(test_weight*x_train,y_train) for test_weight in test_weights])
+
+    loss_val, = ax[0].plot([], [], 'o')
+    loss_grad, = ax[0].plot([], [],c='r')
+    line, = ax[1].plot([], [],c='r')
+
+    def animate(i):
+        loss_val.set_data(Ws[i],loss(Ws[i]*x_train,y_train))
+        loss_grad.set_data(test_weights,grads[i]*test_weights-(grads[i]*Ws[i]-loss(Ws[i]*x_train,y_train)))
+        line.set_data(x_train, Ws[i]*x_train)
+        return (line,loss_val,loss_grad,)
+
+    anim = animation.FuncAnimation(fig, animate,
+                                   frames=Ws.size, interval=480, 
+                                   blit=True)
+    return(anim)
