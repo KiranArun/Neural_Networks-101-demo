@@ -5,6 +5,8 @@ import tensorflow as tf
 import sklearn.linear_model
 from math import ceil,floor
 from sklearn.utils import shuffle
+from urllib import request
+import gzip, pickle, os
 
 def draw_neural_net(ax, left, right, bottom, top, layer_sizes, layer_text=None):
 
@@ -245,3 +247,92 @@ def show_batch_learning(batch_size=None,M=4.0,x_train=np.linspace(0,10,11),epoch
                                    frames=Ws.size, interval=480, 
                                    blit=True)
     return(anim)
+
+
+
+class MNIST_data():
+    
+    def __init__(self,data_dir,shuffle=True):
+        
+        self.data_dir = data_dir
+        
+        self.filenames = [["training_images","train-images-idx3-ubyte.gz"],
+                          ["test_images","t10k-images-idx3-ubyte.gz"],
+                          ["training_labels","train-labels-idx1-ubyte.gz"],
+                          ["test_labels","t10k-labels-idx1-ubyte.gz"]]
+
+        self.download_mnist()
+        self.save_mnist()
+        self.load(shuffle)
+
+    def download_mnist(self):
+        
+        base_url = "http://yann.lecun.com/exdb/mnist/"
+        
+        for name in self.filenames:
+            
+            if os.path.isfile(self.data_dir+name[1]) != True:
+            
+                print("Downloading "+name[1]+"...")
+                request.urlretrieve(base_url+name[1], self.data_dir+name[1])
+            
+        print("Download complete.")
+        
+    def save_mnist(self):
+        
+        mnist = {}
+
+        for name in self.filenames[:2]:
+            with gzip.open(self.data_dir+name[1], 'rb') as f:
+                
+                if name[0] == 'training_images':
+                    mnist[name[0]],mnist['validation_images'] = np.split(np.frombuffer(f.read(), np.uint8, offset=16).reshape(-1,28**2),[55000],axis=0)
+                else:
+                    mnist[name[0]] = np.frombuffer(f.read(), np.uint8, offset=16).reshape(-1,28**2)
+                
+        for name in self.filenames[-2:]:
+            with gzip.open(self.data_dir+name[1], 'rb') as f:
+                
+                if name[0] == 'training_labels':
+                    
+                    labels = np.frombuffer(f.read(), np.uint8, offset=8)
+                    one_hots = np.zeros(shape=[labels.size,10])
+                    one_hots[np.arange(labels.size),labels] = 1
+                    
+                    mnist[name[0]],mnist['validation_labels'] = np.split(one_hots,[55000],axis=0)
+                else:
+                    
+                    labels = np.frombuffer(f.read(), np.uint8, offset=8)
+                    one_hots = np.zeros(shape=[labels.size,10])
+                    one_hots[np.arange(labels.size),labels] = 1
+                    
+                    mnist[name[0]] = one_hots
+                    
+        with open(self.data_dir+"mnist.pkl", 'wb') as f:
+            pickle.dump(mnist,f)
+            
+        print("Save complete.")
+        
+    def load(self,shuffle):
+        with open(self.data_dir+"mnist.pkl",'rb') as f:
+            mnist = pickle.load(f)
+        
+        train = np.hstack((mnist["training_images"],mnist["training_labels"]))
+        validation = np.hstack((mnist['validation_images'],mnist['validation_labels']))
+        test = np.hstack((mnist["test_images"],mnist["test_labels"]))
+        
+        if shuffle:
+            np.random.shuffle(train)
+            np.random.shuffle(validation)
+            np.random.shuffle(test)
+        
+        self.train_images = train[:,:-10]
+        self.train_labels = train[:,-10:]
+        self.validation_images = validation[:,:-10]
+        self.validation_labels = validation[:,-10:]
+        self.test_images = test[:,:-10]
+        self.test_labels = test[:,-10:]
+        
+    def get_batch(self,iteration,batch_size):
+        
+        return(self.train_images[iteration*batch_size:(iteration+1)*batch_size],self.train_labels[iteration*batch_size:(iteration+1)*batch_size])
