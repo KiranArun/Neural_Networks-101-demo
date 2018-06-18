@@ -254,6 +254,9 @@ class MNIST_data():
     
     def __init__(self,data_dir,shuffle=True):
         
+        if not os.path.exists(data_dir):
+    		os.makedirs(data_dir)
+
         self.data_dir = data_dir
         
         self.filenames = [["training_images","train-images-idx3-ubyte.gz"],
@@ -286,9 +289,9 @@ class MNIST_data():
             with gzip.open(self.data_dir+name[1], 'rb') as f:
                 
                 if name[0] == 'training_images':
-                    mnist[name[0]],mnist['validation_images'] = np.split(np.frombuffer(f.read(), np.uint8, offset=16).reshape(-1,28**2),[55000],axis=0)
+                    mnist[name[0]],mnist['validation_images'] = np.split(np.frombuffer(f.read(), np.uint8, offset=16).reshape(-1,28**2)/255.0,[55000],axis=0)
                 else:
-                    mnist[name[0]] = np.frombuffer(f.read(), np.uint8, offset=16).reshape(-1,28**2)
+                    mnist[name[0]] = np.frombuffer(f.read(), np.uint8, offset=16).reshape(-1,28**2)/255.0
                 
         for name in self.filenames[-2:]:
             with gzip.open(self.data_dir+name[1], 'rb') as f:
