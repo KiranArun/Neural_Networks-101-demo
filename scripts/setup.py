@@ -8,6 +8,7 @@ if 'pytorch' in sys.argv[1:]:
 if 'tensorboard' in sys.argv[1:]:
 	subprocess.call(['chmod', '+x', '/content/Neural_Networks-101-demo/scripts/install_ngrok.sh'])
 	subprocess.call(['/content/Neural_Networks-101-demo/scripts/install_ngrok.sh'])
+	subprocess.call(['cp', '-r', '/content/Neural_Networks-101-demo/logdir/', '/content/'])
 	
 
 if 'helper_funcs' in sys.argv[1:]:
