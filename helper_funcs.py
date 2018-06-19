@@ -116,7 +116,7 @@ def animate_gradient_descent(L_func=None, L_func_p=None, frames=20, lr=0.1, X=np
 	ax.plot(X,L_func(X))
 
 	line, = ax.plot([], [], 'o')
-	
+
 	def animate(i):
 		line.set_data(xs[i], ys[i])
 		return (line,)
@@ -335,6 +335,8 @@ class MNIST_data():
 		self.validation_labels = validation[:,-10:]
 		self.test_images = test[:,:-10]
 		self.test_labels = test[:,-10:]
+
+		self.number_train_samples = self.train_labels[:,0].size
 		
 	def get_batch(self,iteration,batch_size):
 		
