@@ -9,7 +9,7 @@ The human interface to the underlying [Tensorflow](https://www.tensorflow.org/) 
 ---
 
 ### Types of NN's Implemented
-- **1 fully connected layer** (noted as `Basic_*.ipynb` in filename)
+- **2 fully connected layers** (noted as `Basic_*.ipynb` in filename)
 - **2 convolutional layers, 2 fully connected layers** (noted as `Conv_*.ipynb` in filename)
 
 
@@ -18,11 +18,12 @@ The human interface to the underlying [Tensorflow](https://www.tensorflow.org/) 
 - Keras - `keras_models/`
 - PyTorch - `pytorch_models/`
 - Low level Tensorflow with Tensorboard - `tb_models/`
+- NumPy - `numpy_models`
 
 
-### Documented Introductory Notebooks
-- `Basic_MNIST-easy.ipynb` is a very basic intro using Keras
-- `Basic_MNIST.ipynb` is a more advanced intro using low-level Tensorflow
+### Tutorial Notebooks
+- `Basic_MNIST.ipynb` is the code to create a 2 layer Neural Network in Tensorflow
+- `Basic_MNIST-documentation.ipynb` is the documentation and explanations corresponding to the code
 
 
 ### Instructions for Running
