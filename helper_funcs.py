@@ -104,10 +104,12 @@ def animate_gradient_descent(L_func=None, L_func_p=None, frames=20, lr=0.1, X=np
 
 	xs = np.array([start])
 	ys = np.array([L_func(xs[0])])
+	gs = np.array([])
 
 	for i in range(frames):
 		x = xs[-1] - lr*L_func_p(xs[-1])
 		y = L_func(x)
+		gs = np.append(gs,L_func_p(xs[-1]))
 		xs = np.append(xs,x)
 		ys = np.append(ys,y)
 
@@ -116,14 +118,16 @@ def animate_gradient_descent(L_func=None, L_func_p=None, frames=20, lr=0.1, X=np
 	ax.plot(X,L_func(X))
 
 	line, = ax.plot([], [], 'o')
+	tangent, = ax.plot([], [])
 
 	def animate(i):
 		line.set_data(xs[i], ys[i])
+		tangent.set_data(X,X*gs[i]+(ys[i]-xs[i]*gs[i]))
 		return (line,)
 
 	anim = animation.FuncAnimation(fig, animate,
-								   frames=frames, interval=interval, 
-								   blit=True)
+									frames=frames, interval=interval, 
+									blit=True)
 
 	return(anim)
 
